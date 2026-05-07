@@ -14,6 +14,6 @@ The Microsoft docs are, as always, a good place to go for more [information](htt
 
 Something a little different this week. [Some reading and some exercises](./csharp_exceptions.md). 
 
-    - [code snippets](./snippets/)
-    - [exercises](/exercises/)
+- [code snippets](./snippets/)
+- [exercises](/exercises/)
 
