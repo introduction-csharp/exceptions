@@ -1,5 +1,15 @@
 # C# Exceptions — Teaching Notes & Exercises
+
 ### .NET 10 · single-file apps · `dotnet run file.cs`
+
+When you've cloned the repo, in VS Code you should just be able to click the play button on each .cs file and run it independently, with no extra .csproj file. Alternatively, open the terminal `exceptions` directory and just use `dotnet` directly (optionally with `build` or `run` in between `dotnet` and the filename, with the directory).
+
+```bash
+dotnet run snippets/greet.cs
+dotnet exercises/1.crash.cs
+```
+
+
 
 ---
 
@@ -7,11 +17,11 @@
 
 ### What is an exception?
 
-When something goes wrong at runtime, C# **throws an exception** — an object that describes the error. You already have some awareness of classes and inheritance: every exception is an instance of a class that inherits (directly or indirectly) from `System.Exception`. If nothing catches it, the program terminates with an error message.
+When something goes wrong at runtime, C# **throws an exception** — an object that describes the error. You already have some awareness of classes and inheritance: every exception is an instance of a class that inherits (directly or indirectly) from `System.Exception`. *If nothing catches it*, the program terminates with an error message.
 
-#### ``If nothing catches it'' 
+#### `If nothing catches it' 
 
-The exception travels up the call stack, so the current function fails and it gets passed up the stack unless or until it gets dealt with. We will come back to this. 
+The exception travels up the call stack; if the current function fails, it gets passed up the stack to the calling functions, unless or until it gets dealt with. We will come back to this later.
 
 ---
 
@@ -33,18 +43,18 @@ catch (FormatException e)
 }
 ```
 
-Run with: `dotnet run greet.cs`
+Run with: `dotnet run greet.cs` (or with `snippets/` if you're in the top-level repo folder).
 
 Key points:
 - The `try` block runs normally until something throws.
 - The `catch` block only runs if an exception of the **matching type** (or a subtype) is thrown.
-- `e` gives access to the exception object — useful properties: `e.Message`, `e.GetType().Name`, `e.StackTrace`.
+- `e` gives access to the exception object, which has useful properties that you can print out or log: `e.Message`, `e.GetType().Name`, `e.StackTrace`.
 
 ---
 
 ### Multiple `catch` blocks
 
-Stack them top to bottom — C# runs the **first match** it finds.
+Stack them top to bottom — C# runs the **first match** it finds (think like Python with `if ... elif ... else ...`).
 
 ```csharp
 // divide.cs
@@ -74,7 +84,7 @@ catch (Exception e)
 ```
 
 > **Rule:** Put more specific types first, more general types last.  
-> A `catch (Exception)` at the top would swallow everything — legal C# but poor practice.
+> A `catch (Exception)` at the top would swallow everything — legal C# but poor practice (`lawful but awful').
 
 ---
 
@@ -291,11 +301,11 @@ catch (ArgumentException e)
 }
 ```
 
-Use `throw` (bare) when you want to do something — log, clean up — but still let the original exception propagate unchanged. **The stack trace is preserved**, so the caller can see exactly where the problem originated.
+Use `throw` (bare) when you want to do something — log, clean up — but still let the original exception bubble up unchanged. **The stack trace is preserved**, so the caller can see exactly where the problem originated.
 
 ---
 
-#### `throw ex` — re-throw, but destroy the stack trace
+#### `throw ex` — re-throws, but destroys the stack trace
 
 ```csharp
 catch (ArgumentException ex)
@@ -305,7 +315,9 @@ catch (ArgumentException ex)
 }
 ```
 
-`throw ex` resets the stack trace to the current line, losing the original origin. This makes debugging much harder. **Avoid `throw ex`** — there is almost never a good reason to use it. It exists as a language feature but is widely considered a mistake to use.
+`throw ex` resets the stack trace to the current line, losing the original origin. This makes debugging much harder. **Avoid `throw ex`** — there is almost _never_ a good reason to use it. It exists as a language feature but is widely considered a mistake to use. I've included it here so you know it you see it. 
+
+**Aside:** there is possibly one time you might excusable see it ... 
 
 ---
 
@@ -350,7 +362,7 @@ The `InnerException` chain means no information is lost — a debugger or loggin
 | | Preserves original stack trace | Preserves original exception type | Use when |
 |---|:---:|:---:|---|
 | `throw` | ✅ | ✅ | You need to do something (log/clean up) then let it continue |
-| `throw ex` | ❌ | ✅ | Almost never — avoid |
+| `throw ex` | ❌ | ✅ | _Almost_ never — avoid |
 | `throw new X(..., ex)` | ✅ (via InnerException) | ❌ (intentionally) | Translating to a more meaningful exception for the caller |
 
 ---
@@ -435,8 +447,8 @@ catch (InvalidScoreException e)
 
 Points to highlight:
 - `throw new InvalidScoreException(...)` works exactly like throwing any built-in exception.
-- The three-constructor pattern is a C# convention — always include the `inner` one so exceptions can be chained.
-- The class goes in the same `.cs` file above the top-level statements; no project structure needed.
+- The three-constructor *pattern* is a C# convention — always include the `inner` one so exceptions can be chained.
+- For this excercise the class goes in the same `.cs` file above the top-level statements; no project structure needed.
 
 ---
 
@@ -606,9 +618,10 @@ Write a program that holds a small `Dictionary<string, int>` of items and counts
 ### Exercise 8 — Discussion questions
 
 1. Why should `InsufficientQuantityException` inherit from `InventoryException` rather than directly from `Exception`?
-2. Could a caller catch both `ItemNotFoundException` and `InsufficientQuantityException` with a single `catch` block? How?
-3. When would you choose to catch `Exception` rather than a specific type?
-4. What's the purpose of the `(string message, Exception inner)` constructor? When would you use `inner`?
+1. Could a caller catch both `ItemNotFoundException` and `InsufficientQuantityException` with a single `catch` block? How?
+1. When would you choose to catch `Exception` rather than a specific type?
+1. What's the purpose of the `(string message, Exception inner)` constructor? When would you use `inner`?
+1. Discuss when you might explicitly deploy the `throw ex` pattern. 
 
 ---
 
