@@ -6,8 +6,14 @@ An exception itself is generated using the `throw` keyword, in the code where a 
 
 Exceptions themselves can be redefined, inheriting from the base `Exception` class. 
 
-The Microsoft docs are, as always, a good place to start for more [information](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/exceptions/). 
+### More reading 
+
+The Microsoft docs are, as always, a good place to go for more [information](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/exceptions/). 
 
 ## Exercise
 
-The exercise for this week is [here](https://docs.google.com/document/d/1ZlUwGcGaMwo86b0umgmhspt93YluULvytHqSs-LXcDM/edit?usp=sharing). 
+Something a little different this week. [Some reading and some exercises](./csharp_exceptions.md). 
+
+    - [code snippets](./snippets/)
+    - [exercises](/exercises/)
+
